@@ -1,0 +1,91 @@
+        position : ( Float, Float )
+    , velocity : ( Float, Float )
+    , rotation : Float
+
+
+
+type alias Position =
+    ( Float, Float )
+
+
+type alias Player =
+    { position : Position
+    , xVelocity : Float
+    , cannonPower : Float
+    , cannonRotation : Float
+    , fuel : Int
+    , lives : Int
+    }
+
+
+
+type alias GameInfo =
+    {player1: Player
+    , player2: Player}
+
+type Game
+    = NotStarted 
+    | Running GameInfo
+    | Finished GameInfo
+
+initPlayer : Float -> Player
+initPlayer xPos =
+    { position = ( xPos, 0 )
+    , xVelocity = 0
+    , cannonPower = 0
+    , cannonRotation = 0
+    , fuel = 0
+    , lives = 0
+    }
+
+
+
+tick dt { position, velocity, rotation } =
+    let
+        ( ( x, y ), ( vx, vy ) ) =
+            ( position, velocity )
+
+        vy_ =
+            vy - 9.81 * dt
+
+        rot =
+            Debug.log "dt" (rotation + dt * 10)
+
+        ( newP, newV ) =
+            if y <= 0 then
+                ( ( x, 0.00001 ), ( 0, -vy_ * 0.9 ) )
+            else
+                ( ( x, y + vy_ * dt ), ( 0, vy_ ) )
+    in
+        Model newP newV rot
+    
+
+
+-- tick (dt / 1000) model ! []
+
+
+
+---- VIEW ----
+-- view : Model -> Html Msg
+-- view model =
+--     div [class "grid-container"]
+--         [ div [ class "main-game" ]
+--             [ img [ src "/logo.svg" ] []
+--             , h1 [] [ text "Your Elm App is working!" ]
+--             ]
+--         , div [class "left-player"][ button [class "far fa-caret-square-up fa-3x"][]]
+--         ]
+
+
+
+                -- , Render.shapeWithOptions rectangle { color = Color.yellow, position = ( 0, 0, 0 ), size = ( 10, 1 ), rotation = ((m.rotation) * pi / 180), pivot = ( 0, 0.5 ) }
+                -- , Render.shape circle { color = Color.blue, position = m.position, size = ( 0.5, 0.5 ) }
+                
+                
+                
+                [ Render.shape rectangle { color = Color.green, position = ( -600, -450 ), size = ( 1200, 150 ) }
+
+
+
+
+        , div [ class "left-player" ] [ button [ class "far fa-caret-square-up fa-3x" ] [] ]

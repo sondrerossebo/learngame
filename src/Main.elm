@@ -1,20 +1,33 @@
+
 module Main exposing (..)
 
-import Html exposing (Html, text, div, h1, img, button)
-import Html.Attributes exposing (src,class)
-import Html.Events exposing (onClick)
+import Html.Attributes exposing (src, style, class)
+import Color
+import Html exposing (..)
+import AnimationFrame
+import Debug
+import Game.TwoD.Camera as Camera exposing (Camera)
+import Game.TwoD.Render as Render exposing (Renderable, rectangle, circle)
+import Game.TwoD as Game
+import Keyboard.Extra exposing (Key)
 
 
 ---- MODEL ----
 
 
 type alias Model =
-    { kanonRotasjon : Int }
+    { 
+     pressedKeys : List Key
+    }
+
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { kanonRotasjon = 0 }, Cmd.none )
+    { 
+     pressedKeys = []
+    }
+        ! []
 
 
 
@@ -22,38 +35,47 @@ init =
 
 
 type Msg
-    = NoOp
-    | MerRotasjon
-    | MindreRotasjon
+    = Tick Float
+    | KeyMsg Keyboard.Extra.Msg
+
+
+subs : Model -> Sub Msg
+subs model =
+    Sub.batch
+        [ Sub.map KeyMsg Keyboard.Extra.subscriptions
+        , AnimationFrame.diffs Tick
+        ]
+
+
+
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        MerRotasjon ->
-            ( { model | kanonRotasjon = model.kanonRotasjon + 1 }, Cmd.none )
-
-        MindreRotasjon ->
-            ( { model | kanonRotasjon = model.kanonRotasjon - 1 }, Cmd.none )
-
-        NoOp ->
+        Tick dt ->
             ( model, Cmd.none )
 
+        KeyMsg keyMsg ->
+            ( { model | pressedKeys = Keyboard.Extra.update keyMsg model.pressedKeys }
+            , Cmd.none
+            )
 
 
----- VIEW ----
+
+
 
 
 view : Model -> Html Msg
-view model =
-    div []
-        [ img [ src "/logo.svg" ] []
-        , h1 []
-            [ text "sondre sin test"
+view m =
+    div [ class "grid-container" ]
+        [ h1 [ class "heading" ] [ text "Test" ]
+        , div [ class "main-game" ]
+            [ Game.renderCentered { time = 0, camera = Camera.fixedArea (1200 * 900) ( 0, 0 ), size = ( 1200, 900 ) }
+                [ 
+
+                ]
             ]
-        , button [class "fas fa-arrow-circle-right fa-3x", onClick MerRotasjon ] [ text "+" ]
-        , button [ onClick MindreRotasjon ] [ text "-" ]
-        , text ("rotasjon:" ++ (toString model.kanonRotasjon))
         ]
 
 
@@ -67,5 +89,6 @@ main =
         { view = view
         , init = init
         , update = update
-        , subscriptions = always Sub.none
+        , subscriptions = subs
         }
+

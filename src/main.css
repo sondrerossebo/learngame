@@ -1,7 +1,8 @@
+
 body {
   font-family: 'Source Sans Pro', 'Trebuchet MS', 'Lucida Grande', 'Bitstream Vera Sans', 'Helvetica Neue', sans-serif;
   margin: 0;
-  text-align: center;
+  /* text-align: center; */
   color: #293c4b;
 }
 
@@ -12,4 +13,27 @@ h1 {
 img {
   margin: 20px 0;
   max-width: 200px;
+}
+
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1200px 1fr;
+  grid-template-rows: 100px 200px 700px 1fr;
+}
+
+.heading {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.main-game {
+  grid-column: 2;
+  grid-row: 2 / 4;
+  background-color: bisque;
+}
+
+.left-player {
+  grid-column: 1;
+  grid-row: 2;
 }
