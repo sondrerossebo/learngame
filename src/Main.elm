@@ -2,6 +2,7 @@
 module Main exposing (..)
 
 import Html.Attributes exposing (src, style, class)
+import Html.Events exposing (..)
 import Color
 import Html exposing (..)
 import AnimationFrame
@@ -16,8 +17,9 @@ import Keyboard.Extra exposing (Key)
 
 
 type alias Model =
-    { 
-     pressedKeys : List Key
+    {
+     kanonRotasjon : Float 
+    , pressedKeys : List Key
     }
 
 
@@ -25,7 +27,8 @@ type alias Model =
 init : ( Model, Cmd Msg )
 init =
     { 
-     pressedKeys = []
+     kanonRotasjon = 0
+    , pressedKeys = []
     }
         ! []
 
@@ -37,6 +40,8 @@ init =
 type Msg
     = Tick Float
     | KeyMsg Keyboard.Extra.Msg
+    | MerRotasjon
+    | MindreRotasjon
 
 
 subs : Model -> Sub Msg
@@ -60,22 +65,37 @@ update msg model =
             ( { model | pressedKeys = Keyboard.Extra.update keyMsg model.pressedKeys }
             , Cmd.none
             )
+        MerRotasjon ->
+            ( {model | kanonRotasjon = model.kanonRotasjon + 1}, Cmd.none )
+        MindreRotasjon ->
+            ( {model | kanonRotasjon = model.kanonRotasjon - 1}, Cmd.none )
 
 
-
+graderTilRadianer : Float -> Float
+graderTilRadianer grader = 
+    pi / 180 * grader
 
 
 
 view : Model -> Html Msg
-view m =
+view model =
     div [ class "grid-container" ]
         [ h1 [ class "heading" ] [ text "Test" ]
         , div [ class "main-game" ]
             [ Game.renderCentered { time = 0, camera = Camera.fixedArea (1200 * 900) ( 0, 0 ), size = ( 1200, 900 ) }
                 [ 
 
+                 Render.shape rectangle { color = Color.green, position = ( -600, -300 ), size = ( 1200, 150 ) }
+
+                , Render.shapeWithOptions rectangle { color = Color.purple, position = ( 0, 100, 0 ), size = ( 200, 50 ), rotation = graderTilRadianer model.kanonRotasjon, pivot = ( 0.5, 0.5 ) }
                 ]
             ]
+        , div [ class "left-player" ] [ 
+    
+         button [ onClick MerRotasjon, class "far fa-caret-square-up fa-3x" ] [] 
+        , button [ onClick MindreRotasjon, class "far fa-caret-square-down fa-3x" ] [] 
+        , text ("Rotasjon: " ++ (toString model.kanonRotasjon))
+         ]
         ]
 
 
