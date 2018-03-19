@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (Html, text, div, h1, img, button)
-import Html.Attributes exposing (src)
+import Html.Attributes exposing (src,class)
 import Html.Events exposing (onClick)
 
 
@@ -51,7 +51,7 @@ view model =
         , h1 []
             [ text "sondre sin test"
             ]
-        , button [ onClick MerRotasjon ] [ text "+" ]
+        , button [class "fas fa-arrow-circle-right fa-3x", onClick MerRotasjon ] [ text "+" ]
         , button [ onClick MindreRotasjon ] [ text "-" ]
         , text ("rotasjon:" ++ (toString model.kanonRotasjon))
         ]
