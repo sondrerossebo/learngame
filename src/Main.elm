@@ -10,7 +10,7 @@ import Debug
 import Game.TwoD.Camera as Camera exposing (Camera)
 import Game.TwoD.Render as Render exposing (Renderable, rectangle, circle)
 import Game.TwoD as Game
-import Keyboard.Extra exposing (Key)
+import Keyboard.Extra exposing (Key, arrows)
 
 
 ---- MODEL ----
@@ -18,7 +18,8 @@ import Keyboard.Extra exposing (Key)
 
 type alias Model =
     {
-     kanonRotasjon : Float 
+    kanonPlassering : Float
+    , kanonRotasjon : Float 
     , pressedKeys : List Key
     }
 
@@ -27,13 +28,16 @@ type alias Model =
 init : ( Model, Cmd Msg )
 init =
     { 
-     kanonRotasjon = 0
+     kanonPlassering = 0
+    , kanonRotasjon = 0
+
     , pressedKeys = []
     }
         ! []
 
-
-
+graderTilRadianer : Float -> Float
+graderTilRadianer grader =
+    pi / 180 * grader
 ---- UPDATE ----
 
 
@@ -51,7 +55,19 @@ subs model =
         , AnimationFrame.diffs Tick
         ]
 
+updateCannonRotation : Float -> Model -> Float
+updateCannonRotation tick model =
+    let
+        {x, y} = arrows model.pressedKeys
+    in
+       model.kanonRotasjon + toFloat(y) 
 
+updateCannonSide : Float -> Model -> Float
+updateCannonSide tick model =
+    let
+        {x, y} = arrows model.pressedKeys
+    in
+       model.kanonPlassering + toFloat x * 7
 
 
 
@@ -59,7 +75,12 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Tick dt ->
-            ( model, Cmd.none )
+            let
+                rotation = updateCannonRotation dt model
+                sideflytting = updateCannonSide dt model
+            in
+                
+                 ( {model | kanonRotasjon = rotation, kanonPlassering = sideflytting}, Cmd.none )
 
         KeyMsg keyMsg ->
             ( { model | pressedKeys = Keyboard.Extra.update keyMsg model.pressedKeys }
@@ -70,10 +91,6 @@ update msg model =
         MindreRotasjon ->
             ( {model | kanonRotasjon = model.kanonRotasjon - 1}, Cmd.none )
 
-
-graderTilRadianer : Float -> Float
-graderTilRadianer grader = 
-    pi / 180 * grader
 
 
 
@@ -87,7 +104,7 @@ view model =
 
                  Render.shape rectangle { color = Color.green, position = ( -600, -300 ), size = ( 1200, 150 ) }
 
-                , Render.shapeWithOptions rectangle { color = Color.purple, position = ( 0, 100, 0 ), size = ( 200, 50 ), rotation = graderTilRadianer model.kanonRotasjon, pivot = ( 0.5, 0.5 ) }
+                , Render.shapeWithOptions rectangle { color = Color.purple, position = ( model.kanonPlassering, 100, 0 ), size = ( 200, 50 ), rotation = graderTilRadianer model.kanonRotasjon, pivot = ( 0, 0.5 ) }
                 ]
             ]
         , div [ class "left-player" ] [ 
