@@ -19,7 +19,7 @@ img {
 .grid-container {
   display: grid;
   grid-template-columns: 1fr 1200px 1fr;
-  grid-template-rows: 100px 200px 500px 1fr;
+  grid-template-rows: 100px 200px 400px 1fr;
 }
 
 .heading {

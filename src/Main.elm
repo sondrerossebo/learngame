@@ -99,12 +99,14 @@ view model =
     div [ class "grid-container" ]
         [ h1 [ class "heading" ] [ text "Test" ]
         , div [ class "main-game" ]
-            [ Game.renderCentered { time = 0, camera = Camera.fixedArea (1200 * 900) ( 0, 0 ), size = ( 1200, 900 ) }
+            [ Game.renderCentered { time = 0, camera = Camera.fixedArea (1200 * 700) ( 0, 0 ), size = ( 1200, 700 ) }
                 [ 
 
-                 Render.shape rectangle { color = Color.green, position = ( -600, -300 ), size = ( 1200, 150 ) }
 
-                , Render.shapeWithOptions rectangle { color = Color.purple, position = ( model.kanonPlassering, 100, 0 ), size = ( 200, 50 ), rotation = graderTilRadianer model.kanonRotasjon, pivot = ( 0, 0.5 ) }
+                -- , Render.shapeWithOptions rectangle { color = Color.purple, position = ( model.kanonPlassering, 100, 0 ), size = ( 200, 50 ), rotation = graderTilRadianer model.kanonRotasjon, pivot = ( 0, 0.5 ) }
+                 Render.shape rectangle { color = Color.green, position = ( -600, -300 ), size = ( 1200, 150 ) }
+                ,viewTank model
+                -- , Render.shapeWithOptions rectangle { color = Color.purple, position = ( model.kanonPlassering, 100, 0 ), size = ( 200, 50 ), rotation = graderTilRadianer model.kanonRotasjon, pivot = ( 0, 0.5 ) }
                 ]
             ]
         , div [ class "left-player" ] [ 
@@ -115,6 +117,10 @@ view model =
          ]
         ]
 
+viewTank : Model -> Renderable
+viewTank model =
+
+                 Render.shapeWithOptions rectangle { color = Color.purple, position = ( model.kanonPlassering, 100, 0 ), size = ( 200, 50 ), rotation = graderTilRadianer model.kanonRotasjon, pivot = ( 0, 0.5 ) }
 
 
 ---- PROGRAM ----
